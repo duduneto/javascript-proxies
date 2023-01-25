@@ -5,6 +5,8 @@ const newCardForm = document.querySelector("#mainForm");
 
 // Datas
 
+const consultations = [];
+
 const cards = {
     "Proxies": {
         description: "Use the Proxy() constructor to create a new Proxy object. This constructor takes two mandatory arguments"
@@ -13,7 +15,20 @@ const cards = {
 
 const cardHandler = {
     set(_target, prop, value) {
-        addCardIntoScreen(createCard(prop, value.description))
+        addCardIntoScreen(prop, value.description)
+    },
+    get(_target, prop, receiver) {
+        console.log('_target => ', _target);
+        console.log('prop => ', prop);
+        console.log('receiver => ', receiver);
+        consultations.push({
+            cardTitle: prop,
+            consulted: new Date(),
+        })
+        return {
+            id: new Date().getTime(),
+            ..._target[prop],
+        };
     }
 }
 
@@ -24,7 +39,7 @@ const proxyCards = new Proxy(cards, cardHandler);
 function renderAllCards() {
     Object.entries(cards).forEach((card) => {
 
-        addCardIntoScreen(createCard(card[0], card[1].description))
+        addCardIntoScreen(card[0], card[1].description)
     })
 };
 
@@ -45,8 +60,8 @@ function createCard(titleValue, descriptionValue) {
     return cardContainer;
 }
 
-function addCardIntoScreen(cardContainer) {
-    rightSideRef.append(cardContainer);
+function addCardIntoScreen(titleValue, descriptionValue) {
+    rightSideRef.append(createCard(titleValue, descriptionValue));
 }
 
 function formSubmit(event) {
@@ -65,7 +80,7 @@ function formSubmit(event) {
     };
 
     newCardForm.reset();
-}
+};
 
 // Attribution
 
