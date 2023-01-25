@@ -6,11 +6,14 @@ const newCardForm = document.querySelector("#mainForm");
 // Datas
 
 const cards = {
+    "Proxies": {
+        description: "Use the Proxy() constructor to create a new Proxy object. This constructor takes two mandatory arguments"
+    }
 };
 
 const cardHandler = {
     set(_target, prop, value) {
-        addCardIntoScreen(createCard(prop, value.cardDescription))
+        addCardIntoScreen(createCard(prop, value.description))
     }
 }
 
@@ -21,7 +24,7 @@ const proxyCards = new Proxy(cards, cardHandler);
 function renderAllCards() {
     Object.entries(cards).forEach((card) => {
 
-        addCardIntoScreen(createCard(card[0]))
+        addCardIntoScreen(createCard(card[0], card[1].description))
     })
 };
 
@@ -56,9 +59,12 @@ function formSubmit(event) {
             value: cardDescription
         }
     } = event.target;
+
     proxyCards[cardTitle] = {
-        cardDescription
+        description: cardDescription
     };
+
+    newCardForm.reset();
 }
 
 // Attribution
